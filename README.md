@@ -1,3 +1,10 @@
 # MyHouse24 Project
 
-Це проєкт для керування будинками.
+## Relevant Data Skills
+
+- PostgreSQL database design
+- Relational data modeling
+- Data storage and retrieval
+- Entity relationship design
+- Data management workflows
+- SQL querying
