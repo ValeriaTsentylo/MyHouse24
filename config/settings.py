@@ -16,10 +16,10 @@ else:
     load_dotenv(BASE_DIR / ".env_prod")
 
 # Django secret key for encryption and security
-SECRET_KEY = config("SECRET_KEY")
+SECRET_KEY = config("SECRET_KEY", default="insecure-dev-key-change-me")
 
 # Enable/disable debug mode
-DEBUG = config("DEBUG", default=True, cast=bool)
+DEBUG = config("DEBUG", default=False, cast=bool)
 
 # Allowed hosts for server requests
 ALLOWED_HOSTS = config(
@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "django.contrib.sites",
-    "debug_toolbar",
     # custom apps
     "src.core",
     "src.users",
@@ -61,12 +60,16 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+# debug_toolbar is a development-only dependency
+if DEBUG:
+    INSTALLED_APPS += ["debug_toolbar"]
+    MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
 
 # URL configuration
 ROOT_URLCONF = "config.urls"
@@ -97,9 +100,9 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("DB_NAME"),
-        "USER": config("DB_USER"),
-        "PASSWORD": config("DB_PASSWORD"),
+        "NAME": config("DB_NAME", default="myhouse24"),
+        "USER": config("DB_USER", default="myhouse24"),
+        "PASSWORD": config("DB_PASSWORD", default="myhouse24"),
         "HOST": config("DB_HOST", default="localhost"),
         "PORT": config("DB_PORT", default="5432"),
     }
@@ -122,8 +125,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Language and timezone settings
-LANGUAGE_CODE = "en-us"
-TIME_ZONE = "UTC"
+LANGUAGE_CODE = "uk"
+TIME_ZONE = "Europe/Kyiv"
 USE_I18N = True
 USE_TZ = True
 
@@ -146,7 +149,8 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # Celery configuration for background task processing
-CELERY_BROKER_URL = "redis://localhost:6379/0"  # Use Redis as the broker
+CELERY_BROKER_URL = config("REDIS_URL", default="redis://localhost:6379/0")
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
@@ -154,11 +158,11 @@ CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 # Email configuration for sending confirmation and notifications
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
-EMAIL_HOST = config("EMAIL_HOST")
-EMAIL_PORT = config("EMAIL_PORT", cast=int)
-EMAIL_HOST_USER = config("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
+EMAIL_HOST = config("EMAIL_HOST", default="localhost")
+EMAIL_PORT = config("EMAIL_PORT", cast=int, default=25)
+EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool, default=False)
 EMAIL_USE_SSL = config("EMAIL_USE_SSL", cast=bool, default=False)
 
 # Django Allauth email verification and signup settings
@@ -173,5 +177,43 @@ ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3  # Expiry period for confirmation a l
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True  # Automatic login after email confirmation
 
 # reCAPTCHA keys for form verification
-RECAPTCHA_PUBLIC_KEY = config("RECAPTCHA_PUBLIC_KEY")
-RECAPTCHA_PRIVATE_KEY = config("RECAPTCHA_PRIVATE_KEY")
+RECAPTCHA_PUBLIC_KEY = config("RECAPTCHA_PUBLIC_KEY", default="")
+RECAPTCHA_PRIVATE_KEY = config("RECAPTCHA_PRIVATE_KEY", default="")
+
+# --- Security / logging hardening ---
+# Everything below is inert during local development and turns on in production.
+
+if DEBUG:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+CSRF_TRUSTED_ORIGINS = config(
+    "CSRF_TRUSTED_ORIGINS",
+    default="",
+    cast=lambda v: [s.strip() for s in v.split(",") if s.strip()],
+)
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = config("SECURE_SSL_REDIRECT", default=True, cast=bool)
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_HSTS_SECONDS = 60 * 60 * 24 * 30
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = "DENY"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {"format": "{levelname} {asctime} {name} {message}", "style": "{"},
+    },
+    "handlers": {
+        "console": {"class": "logging.StreamHandler", "formatter": "verbose"},
+    },
+    "root": {"handlers": ["console"], "level": "INFO"},
+    "loggers": {
+        "src": {"handlers": ["console"], "level": "DEBUG" if DEBUG else "INFO", "propagate": False},
+    },
+}
