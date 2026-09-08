@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import inlineformset_factory
-from src.houses.models import Section, House
+
+from src.houses.models import House, Section
 
 
 class SectionForm(forms.ModelForm):
@@ -13,6 +14,4 @@ class SectionForm(forms.ModelForm):
         }
 
 
-SectionFormSet = inlineformset_factory(
-    House, Section, form=SectionForm, extra=0, can_delete=True
-)
+SectionFormSet = inlineformset_factory(House, Section, form=SectionForm, extra=0, can_delete=True)

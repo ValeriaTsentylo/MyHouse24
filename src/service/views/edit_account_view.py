@@ -2,11 +2,12 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
 
+from src.core.mixins import StaffRequiredMixin
 from src.service.forms.account_form import AccountForm
 from src.service.models import Account
 
 
-class EditAccountView(FormView):
+class EditAccountView(StaffRequiredMixin, FormView):
     template_name = "account/account.html"
     form_class = AccountForm
     success_url = reverse_lazy("accounts")

@@ -2,10 +2,11 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
 
+from src.core.mixins import StaffRequiredMixin
 from src.service.forms.account_form import AccountForm
 
 
-class CreateAccountView(FormView):
+class CreateAccountView(StaffRequiredMixin, FormView):
     template_name = "account/account.html"
     form_class = AccountForm
 

@@ -1,13 +1,14 @@
-from django.urls import path, include
+from django.urls import include, path
+
 from .views import (
-    CustomSignupView,
-    CustomLoginView,
-    UsersStaffAjaxDatatableView,
     CreateStaffUserView,
+    CustomLoginView,
+    CustomSignupView,
+    DeleteUserView,
     EditStaffUserView,
     UserProfileView,
+    UsersStaffAjaxDatatableView,
     UsersStaffListView,
-    DeleteUserView,
 )
 
 urlpatterns = [
@@ -20,9 +21,7 @@ urlpatterns = [
         UsersStaffAjaxDatatableView.as_view(),
         name="users-staff-datatable",
     ),
-    path(
-        "users-staff/create/", CreateStaffUserView.as_view(), name="users-staff-create"
-    ),
+    path("users-staff/create/", CreateStaffUserView.as_view(), name="users-staff-create"),
     path(
         "users-staff/<int:pk>/edit/",
         EditStaffUserView.as_view(),

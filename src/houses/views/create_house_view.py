@@ -1,7 +1,9 @@
-from django.shortcuts import redirect
+from django.db import transaction
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
 
+from src.core.mixins import StaffRequiredMixin
 from src.houses.forms.create_house_form import CreateHouseForm
 from src.houses.forms.floor_form import FloorFormSet
 from src.houses.forms.section_form import SectionFormSet
@@ -9,7 +11,7 @@ from src.houses.forms.staff_form import StaffFormSet
 from src.houses.models import House
 
 
-class CreateHouseView(FormView):
+class CreateHouseView(StaffRequiredMixin, FormView):
     template_name = "houses/create_house_page.html"
     form_class = CreateHouseForm
     success_url = reverse_lazy("houses")
@@ -19,9 +21,7 @@ class CreateHouseView(FormView):
         house = self.get_house()
 
         if self.request.POST:
-            context["section_formset"] = SectionFormSet(
-                self.request.POST, instance=house
-            )
+            context["section_formset"] = SectionFormSet(self.request.POST, instance=house)
             context["floor_formset"] = FloorFormSet(self.request.POST, instance=house)
             context["staff_formset"] = StaffFormSet(self.request.POST, instance=house)
         else:
@@ -33,7 +33,7 @@ class CreateHouseView(FormView):
     def get_house(self):
         house_id = self.kwargs.get("pk")
         if house_id:
-            return House.objects.get(pk=house_id)
+            return get_object_or_404(House, pk=house_id)
         return None
 
     def form_valid(self, form):
@@ -42,21 +42,15 @@ class CreateHouseView(FormView):
         floor_formset = context["floor_formset"]
         staff_formset = context["staff_formset"]
 
-        if (
-            section_formset.is_valid()
-            and floor_formset.is_valid()
-            and staff_formset.is_valid()
+        if not (
+            section_formset.is_valid() and floor_formset.is_valid() and staff_formset.is_valid()
         ):
+            return self.render_to_response(context)
+
+        with transaction.atomic():
             house = form.save()
+            for formset in (section_formset, floor_formset, staff_formset):
+                formset.instance = house
+                formset.save()
 
-            section_formset.instance = house
-            floor_formset.instance = house
-            staff_formset.instance = house
-
-            section_formset.save()
-            floor_formset.save()
-            staff_formset.save()
-
-            return redirect(self.success_url)
-
-        return self.render_to_response(self.get_context_data(form=form))
+        return redirect(self.success_url)

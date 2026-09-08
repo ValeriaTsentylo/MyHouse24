@@ -3,23 +3,24 @@ from django.urls import reverse
 from django.views.generic import TemplateView
 
 from src.apartments.models import Apartment
+from src.core.mixins import StaffRequiredMixin
 from src.houses.models import House
 from src.users.models import User
 
 
 # TODO: Додати відображення для Залишку як буде вже готова система обліку
-class ApartmentsListView(TemplateView):
+class ApartmentsListView(StaffRequiredMixin, TemplateView):
     template_name = "apartments/apartments_datatable.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         context["houses"] = House.objects.all()
-        context["users"] = User.objects.all()
+        context["users"] = User.objects.filter(is_staff=False).only("id", "name", "email")
         return context
 
 
-class ApartmentsAjaxDatatableView(AjaxDatatableView):
+class ApartmentsAjaxDatatableView(StaffRequiredMixin, AjaxDatatableView):
     model = Apartment
     title = "Квартири"
     initial_order = [["number", "asc"]]
@@ -81,7 +82,11 @@ class ApartmentsAjaxDatatableView(AjaxDatatableView):
     ]
 
     def get_initial_queryset(self, request=None):
-        queryset = super().get_initial_queryset(request)
+        queryset = (
+            super()
+            .get_initial_queryset(request)
+            .select_related("house", "section", "floor", "owner")
+        )
         house_id = self.request.GET.get("house_id")
         section_id = self.request.GET.get("section_id")
         floor_id = self.request.GET.get("floor_id")
@@ -96,7 +101,6 @@ class ApartmentsAjaxDatatableView(AjaxDatatableView):
         return queryset
 
     def customize_row(self, row, obj):
-
         row["DT_RowAttr"] = {"data-id": obj.id}
 
         row["actions"] = """

@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
 
+from src.core.mixins import StaffRequiredMixin
 from src.houses.forms.edit_house_form import EditHouseForm
 from src.houses.forms.floor_form import FloorFormSet
 from src.houses.forms.section_form import SectionFormSet
@@ -10,7 +11,7 @@ from src.houses.forms.staff_form import StaffFormSet
 from src.houses.models import House
 
 
-class EditHouseView(UpdateView):
+class EditHouseView(StaffRequiredMixin, UpdateView):
     model = House
     template_name = "houses/edit_house_page.html"
     form_class = EditHouseForm
@@ -21,9 +22,7 @@ class EditHouseView(UpdateView):
         house = self.object
 
         if self.request.POST:
-            context["section_formset"] = SectionFormSet(
-                self.request.POST, instance=house
-            )
+            context["section_formset"] = SectionFormSet(self.request.POST, instance=house)
             context["floor_formset"] = FloorFormSet(self.request.POST, instance=house)
             context["staff_formset"] = StaffFormSet(self.request.POST, instance=house)
         else:
@@ -39,11 +38,7 @@ class EditHouseView(UpdateView):
         floor_formset = context["floor_formset"]
         staff_formset = context["staff_formset"]
 
-        if (
-            section_formset.is_valid()
-            and floor_formset.is_valid()
-            and staff_formset.is_valid()
-        ):
+        if section_formset.is_valid() and floor_formset.is_valid() and staff_formset.is_valid():
             try:
                 with transaction.atomic():
                     house = form.save()

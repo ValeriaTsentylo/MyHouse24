@@ -21,9 +21,7 @@ class Service(models.Model):
 class Tariff(models.Model):
     name = models.CharField(max_length=30)
     description = models.TextField()
-    service = models.ForeignKey(
-        Service, on_delete=models.CASCADE, null=True, blank=True
-    )
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.name

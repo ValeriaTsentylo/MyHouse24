@@ -1,18 +1,18 @@
 from django.urls import path
 
 from .views import (
-    ServicesView,
+    AccountsAjaxDatatableView,
+    AccountsListView,
     AddTariffView,
+    CreateAccountView,
+    DeleteAccountView,
+    DeleteTariffView,
+    EditAccountView,
+    EditTariffView,
+    ServicesView,
+    TariffDetailView,
     TariffListView,
     TariffsAjaxDatatableView,
-    EditTariffView,
-    TariffDetailView,
-    DeleteTariffView,
-    CreateAccountView,
-    AccountsListView,
-    AccountsAjaxDatatableView,
-    EditAccountView,
-    DeleteAccountView,
 )
 
 urlpatterns = [
@@ -39,7 +39,5 @@ urlpatterns = [
         AccountsAjaxDatatableView.as_view(),
         name="accounts-datatable",
     ),
-    path(
-        "accounts/delete/<int:pk>/", DeleteAccountView.as_view(), name="delete-account"
-    ),
+    path("accounts/delete/<int:pk>/", DeleteAccountView.as_view(), name="delete-account"),
 ]

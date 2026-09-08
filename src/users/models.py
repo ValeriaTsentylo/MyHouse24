@@ -1,6 +1,7 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
+
 from src.core.models import GalleryImage
 from src.roles.models import RolePermission
 
@@ -77,6 +78,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         Check if user has a specific permission
         """
+        if self.is_superuser:
+            return True
+        if not self.role_id:
+            return False
         return self.role.permissions.filter(codename=perm_codename).exists()
 
     def has_role(self, role_name):

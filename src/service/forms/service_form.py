@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import modelformset_factory
-from src.service.models import UnitOfChange, Service
+
+from src.service.models import Service, UnitOfChange
 
 
 class UnitForm(forms.ModelForm):

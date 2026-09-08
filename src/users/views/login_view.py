@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.urls import reverse_lazy
 
 from src.users.forms.login_form import CustomLoginForm
-from src.users.utils import verify_recaptcha, is_email_verified
+from src.users.utils import is_email_verified, verify_recaptcha
 
 
 class CustomLoginView(LoginView):
@@ -28,18 +28,12 @@ class CustomLoginView(LoginView):
                 # Перевірка ролі користувача
                 if role == "admin" and user.is_staff:
                     login(self.request, user)
-                    return JsonResponse(
-                        {"redirect_url": str(self.success_url_admin)}, status=200
-                    )
+                    return JsonResponse({"redirect_url": str(self.success_url_admin)}, status=200)
                 elif role == "resident" and not user.is_staff:
                     login(self.request, user)
-                    return JsonResponse(
-                        {"redirect_url": str(self.success_url_user)}, status=200
-                    )
+                    return JsonResponse({"redirect_url": str(self.success_url_user)}, status=200)
                 else:
-                    form.add_error(
-                        None, "User role mismatch. Please check your credentials."
-                    )
+                    form.add_error(None, "User role mismatch. Please check your credentials.")
                     return self.form_invalid(form)
             else:
                 form.add_error(None, "Invalid email or password")

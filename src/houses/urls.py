@@ -1,11 +1,12 @@
 from django.urls import path
+
 from .views import (
     CreateHouseView,
-    HousesListView,
-    HousesAjaxDatatableView,
-    HouseProfileView,
     DeleteHouseView,
     EditHouseView,
+    HouseProfileView,
+    HousesAjaxDatatableView,
+    HousesListView,
 )
 
 urlpatterns = [

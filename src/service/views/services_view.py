@@ -1,19 +1,18 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.views import View
 
-from src.service.forms.service_form import UnitFormSet, ServiceFormSet
-from src.service.models import UnitOfChange, Service
+from src.core.mixins import StaffRequiredMixin
+from src.service.forms.service_form import ServiceFormSet, UnitFormSet
+from src.service.models import Service, UnitOfChange
 
 
-class ServicesView(View):
+class ServicesView(StaffRequiredMixin, View):
     template_name = "service/service_page.html"
     success_url = "services"
 
     def get(self, request):
         unit_formset = UnitFormSet(queryset=UnitOfChange.objects.all())
-        service_formset = ServiceFormSet(
-            queryset=Service.objects.all(), prefix="service"
-        )
+        service_formset = ServiceFormSet(queryset=Service.objects.all(), prefix="service")
 
         units = UnitOfChange.objects.values("id", "name")
 

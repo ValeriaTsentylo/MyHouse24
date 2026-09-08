@@ -1,4 +1,8 @@
+import logging
+
 from django.contrib.auth.models import Group, Permission
+
+logger = logging.getLogger(__name__)
 
 
 class RolePermission(Group):
@@ -78,4 +82,4 @@ class RolePermission(Group):
                     permission = Permission.objects.get(codename=perm_codename)
                     group.permissions.add(permission)
                 except Permission.DoesNotExist:
-                    print(f"Permission {perm_codename} does not exist.")
+                    logger.warning(f"Permission {perm_codename} does not exist.")

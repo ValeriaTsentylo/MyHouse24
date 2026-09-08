@@ -1,13 +1,13 @@
 from django.urls import path
 
 from .views import (
-    CreateApartmentView,
-    GetSectionsAndFloorsView,
+    ApartmentProfileView,
     ApartmentsAjaxDatatableView,
     ApartmentsListView,
+    CreateApartmentView,
     DeleteApartmentView,
-    ApartmentProfileView,
     EditApartmentView,
+    GetSectionsAndFloorsView,
 )
 
 urlpatterns = [
@@ -33,7 +33,5 @@ urlpatterns = [
         ApartmentProfileView.as_view(),
         name="apartment-profile",
     ),
-    path(
-        "apartments/<int:pk>/edit/", EditApartmentView.as_view(), name="edit_apartment"
-    ),
+    path("apartments/<int:pk>/edit/", EditApartmentView.as_view(), name="edit_apartment"),
 ]

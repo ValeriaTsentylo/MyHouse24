@@ -2,14 +2,15 @@ from ajax_datatable import AjaxDatatableView
 from django.urls import reverse
 from django.views.generic import TemplateView
 
+from src.core.mixins import StaffRequiredMixin
 from src.service.models import Account
 
 
-class AccountsListView(TemplateView):
+class AccountsListView(StaffRequiredMixin, TemplateView):
     template_name = "account/accounts_datatable.html"
 
 
-class AccountsAjaxDatatableView(AjaxDatatableView):
+class AccountsAjaxDatatableView(StaffRequiredMixin, AjaxDatatableView):
     model = Account
     title = "Статті прихід/розхід"
     initial_order = [["name", "asc"]]

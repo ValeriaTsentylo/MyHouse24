@@ -1,13 +1,15 @@
-from django.shortcuts import render, redirect
+from django.db import transaction
+from django.shortcuts import redirect, render
 from django.views.generic import View
 
+from src.core.mixins import StaffRequiredMixin
 from src.roles.models import RolePermission
 from src.users.forms.create_staff_user_form import CreateStaffUserForm
 from src.users.models import User
 from src.users.tasks import send_email_task
 
 
-class CreateStaffUserView(View):
+class CreateStaffUserView(StaffRequiredMixin, View):
     template_name = "users/admin/create_staff_user.html"
     form_class = CreateStaffUserForm
 
@@ -26,17 +28,14 @@ class CreateStaffUserView(View):
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
             password = form.cleaned_data["password1"]
 
-            user.set_password(password)
-            user.is_staff = True
-
-            user.save()
-
-            role = form.cleaned_data["role"]
-            user.role = role
-            user.save()
+            with transaction.atomic():
+                user = form.save(commit=False)
+                user.set_password(password)
+                user.is_staff = True
+                user.role = form.cleaned_data["role"]
+                user.save()
 
             # Підготовка даних для листа
             subject = "Ваш обліковий запис адміністратора створено"
@@ -47,8 +46,10 @@ class CreateStaffUserView(View):
             }
 
             # Викликаємо завдання Celery для асинхронної відправки листа
-            send_email_task.delay(
-                subject, "emails_template/account_create.html", context, user.email
+            transaction.on_commit(
+                lambda: send_email_task.delay(
+                    subject, "emails_template/account_create.html", context, user.email
+                )
             )
 
             return redirect("users-staff")

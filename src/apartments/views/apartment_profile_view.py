@@ -1,9 +1,10 @@
 from django.views.generic import TemplateView
 
 from src.apartments.models import Apartment
+from src.core.mixins import StaffRequiredMixin
 
 
-class ApartmentProfileView(TemplateView):
+class ApartmentProfileView(StaffRequiredMixin, TemplateView):
     template_name = "apartments/apartment_profile_page.html"
 
     def get_context_data(self, **kwargs):

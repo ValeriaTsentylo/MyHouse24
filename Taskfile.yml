@@ -36,13 +36,33 @@ tasks:
     cmds:
       - poetry run python manage.py shell
 
-  git_push:
-    desc: Commit and push changes to the repository with a custom commit message
+  up:
+    desc: Start the whole stack (web, db, redis, celery) in Docker
     cmds:
-      - git add .
-      - |
-        echo "Enter your commit message:"
-        read commit_message
-        git commit -m "$commit_message"
-      - git push origin main
+      - docker compose up --build
 
+  down:
+    desc: Stop the stack
+    cmds:
+      - docker compose down
+
+  test:
+    desc: Run the test suite
+    cmds:
+      - poetry run pytest --cov=src --cov-report=term-missing
+
+  lint:
+    desc: Lint and format
+    cmds:
+      - poetry run ruff check --fix .
+      - poetry run ruff format .
+
+  check:
+    desc: Django system checks, including deployment warnings
+    cmds:
+      - poetry run python manage.py check --deploy
+
+  celery:
+    desc: Start a Celery worker
+    cmds:
+      - poetry run celery -A config worker -l info

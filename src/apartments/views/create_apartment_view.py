@@ -5,11 +5,12 @@ from django.views import View
 from django.views.generic.edit import FormView
 
 from src.apartments.forms.create_apartment_form import CreateApartmentForm
-from src.houses.models import Section, Floor
+from src.core.mixins import StaffRequiredMixin
+from src.houses.models import Floor, Section
 
 
 # TODO: Додати рахунок та тариф для зберігання
-class CreateApartmentView(FormView):
+class CreateApartmentView(StaffRequiredMixin, FormView):
     template_name = "apartments/create_apartment_page.html"
     form_class = CreateApartmentForm
     success_url = reverse_lazy("apartments")
@@ -35,7 +36,7 @@ class CreateApartmentView(FormView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class GetSectionsAndFloorsView(View):
+class GetSectionsAndFloorsView(StaffRequiredMixin, View):
     @staticmethod
     def get(request, *args, **kwargs):
         action = request.GET.get("action")

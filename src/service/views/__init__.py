@@ -1,4 +1,4 @@
-from .account_datatable_view import AccountsListView, AccountsAjaxDatatableView
+from .account_datatable_view import AccountsAjaxDatatableView, AccountsListView
 from .account_delete_view import DeleteAccountView
 from .add_tariff_view import AddTariffView
 from .create_account_view import CreateAccountView

@@ -1,0 +1,14 @@
+.git
+.github
+.venv
+venv
+__pycache__
+*.py[cod]
+.pytest_cache
+staticfiles
+media
+.env
+.env_local
+.env_prod
+*.md
+!README.md

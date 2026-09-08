@@ -62,10 +62,11 @@
 
 
 from django import forms
-from src.houses.models import Section, Floor, House
-from src.service.models import Tariff
-from src.apartments.models import Apartment
 from django.contrib.auth import get_user_model
+
+from src.apartments.models import Apartment
+from src.houses.models import Floor, House, Section
+from src.service.models import Tariff
 
 User = get_user_model()
 
@@ -137,9 +138,7 @@ class CreateApartmentForm(forms.ModelForm):
         section = self.cleaned_data.get("section")
         house = self.cleaned_data.get("house")
         if section and not Section.objects.filter(id=section.id, house=house).exists():
-            raise forms.ValidationError(
-                "Обрана секція не відповідає вибраному будинку."
-            )
+            raise forms.ValidationError("Обрана секція не відповідає вибраному будинку.")
         return section
 
     # Валідація поля floor
@@ -147,7 +146,5 @@ class CreateApartmentForm(forms.ModelForm):
         floor = self.cleaned_data.get("floor")
         house = self.cleaned_data.get("house")
         if floor and not Floor.objects.filter(id=floor.id, house=house).exists():
-            raise forms.ValidationError(
-                "Обраний поверх не відповідає вибраному будинку."
-            )
+            raise forms.ValidationError("Обраний поверх не відповідає вибраному будинку.")
         return floor

@@ -1,9 +1,10 @@
 from django.views.generic import DetailView
 
-from src.service.models import Tariff, ServicePrice
+from src.core.mixins import StaffRequiredMixin
+from src.service.models import ServicePrice, Tariff
 
 
-class TariffDetailView(DetailView):
+class TariffDetailView(StaffRequiredMixin, DetailView):
     model = Tariff
     template_name = "tariff/tariff_profile_page.html"
     context_object_name = "tariff"

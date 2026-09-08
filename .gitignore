@@ -13,3 +13,24 @@ venv/
 # cach files
 __pycache__/
 *.py[cod]
+
+.env.test
+
+/.vscode
+
+# python
+.pytest_cache/
+.coverage
+htmlcov/
+
+# django build artifacts
+/staticfiles/
+/media/
+
+# vendor source maps (не потрібні в рантаймі)
+*.map
+
+# os
+.DS_Store
+
+*.bak

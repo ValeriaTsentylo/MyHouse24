@@ -1,6 +1,6 @@
 from django.db import models
 
-from src.houses.models import Section, Floor, House
+from src.houses.models import Floor, House, Section
 from src.service.models import Tariff
 from src.users.models import User
 
@@ -24,9 +24,7 @@ class ApartmentOwner(models.Model):
         blank=True,
         related_name="apartments",
     )
-    apartment = models.ForeignKey(
-        Apartment, on_delete=models.CASCADE, null=True, blank=True
-    )
+    apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.name if self.user.name else self.user.email} - {self.apartment}"
