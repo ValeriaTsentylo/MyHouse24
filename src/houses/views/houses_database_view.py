@@ -2,8 +2,8 @@ from ajax_datatable import AjaxDatatableView
 from django.urls import reverse
 from django.views.generic import TemplateView
 
-from src.houses.models import House
 from src.core.mixins import StaffRequiredMixin
+from src.houses.models import House
 
 
 class HousesListView(StaffRequiredMixin, TemplateView):

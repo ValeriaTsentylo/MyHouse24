@@ -55,10 +55,11 @@ def test_url_discovery_found_views():
 def test_anonymous_cannot_reach_admin_views(client, name, url):
     # secure=True so an enabled SECURE_SSL_REDIRECT cannot mask the result
     response = client.get(url, secure=True)
-    assert response.status_code in (302, 403), (
-        f"{name} ({url}) returned {response.status_code} to an anonymous user"
-    )
+    assert response.status_code in (
+        302,
+        403,
+    ), f"{name} ({url}) returned {response.status_code} to an anonymous user"
     if response.status_code == 302:
-        assert "login" in response["Location"], (
-            f"{name} redirected to {response['Location']} instead of the login page"
-        )
+        assert (
+            "login" in response["Location"]
+        ), f"{name} redirected to {response['Location']} instead of the login page"

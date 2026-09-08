@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView
-from src.houses.models import House, Section, Floor
+
 from src.core.mixins import StaffRequiredMixin
+from src.houses.models import Floor, House, Section
 
 
 class HouseProfileView(StaffRequiredMixin, TemplateView):

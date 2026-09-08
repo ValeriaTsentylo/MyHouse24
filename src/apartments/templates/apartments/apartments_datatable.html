@@ -58,7 +58,7 @@
                                             </select>
                                         </th>
                                         <th>
-                                            
+
                                             <select id="user-filter" class="form-control">
                                                 <option value="">-- Оберіть власника --</option>
                                                 {% for user in users %}<option value="{{ user.id }}">{{ user.name }}</option>{% endfor %}
@@ -98,7 +98,7 @@
                         data: function (d) {
                             d.house_id = $('#house-filter').val(); // ID будинку
                             d.section_id = $('#section-filter').val(); // ID секції
-                            d.floor_id = $('#floor-filter').val(); // ID поверху    
+                            d.floor_id = $('#floor-filter').val(); // ID поверху
                         }
                     },
                     columns: [

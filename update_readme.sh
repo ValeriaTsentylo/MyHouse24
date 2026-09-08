@@ -1,3 +1,40 @@
+#!/usr/bin/env bash
+#
+# update_readme.sh — regenerates README.md for the MyHouse24 project.
+#
+#   ./update_readme.sh              # write README.md (keeps a .bak of the old one)
+#   ./update_readme.sh --print      # print to stdout, write nothing
+#   ./update_readme.sh --no-backup  # overwrite without a backup
+#   ./update_readme.sh -o docs/README.md
+#
+set -euo pipefail
+
+OUT="README.md"
+BACKUP=1
+PRINT_ONLY=0
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --print|--dry-run) PRINT_ONLY=1; shift ;;
+    --no-backup)       BACKUP=0; shift ;;
+    -o|--output)       OUT="${2:?missing path after $1}"; shift 2 ;;
+    -h|--help)         sed -n '2,10p' "$0"; exit 0 ;;
+    *) echo "Unknown option: $1" >&2; exit 1 ;;
+  esac
+done
+
+# Run from the repo root so the README lands next to manage.py.
+if [[ -f manage.py && -f pyproject.toml ]]; then
+  ROOT="$PWD"
+elif ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"; then
+  cd "$ROOT"
+else
+  echo "Run this from the MyHouse24 project root (manage.py not found)." >&2
+  exit 1
+fi
+
+read_readme() {
+cat <<'MARKDOWN'
 # MyHouse24
 
 [![CI](https://github.com/ValeriaTsentylo/MyHouse24/actions/workflows/ci.yml/badge.svg)](https://github.com/ValeriaTsentylo/MyHouse24/actions/workflows/ci.yml)
@@ -187,3 +224,18 @@ task up               task down            task test           task lint
   has to be running in production; with `DEBUG=True` the console backend is used
   and no worker or SMTP credentials are needed.
 - Logging goes to the console: `INFO` at the root, `DEBUG` for `src.*` when `DEBUG=True`.
+MARKDOWN
+}
+
+if [[ $PRINT_ONLY -eq 1 ]]; then
+  read_readme
+  exit 0
+fi
+
+if [[ $BACKUP -eq 1 && -f "$OUT" ]]; then
+  cp "$OUT" "$OUT.bak"
+  echo "Old file saved as $OUT.bak"
+fi
+
+read_readme > "$OUT"
+echo "Written: $ROOT/$OUT ($(wc -l < "$OUT") lines)"

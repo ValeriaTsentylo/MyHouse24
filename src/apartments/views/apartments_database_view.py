@@ -3,9 +3,9 @@ from django.urls import reverse
 from django.views.generic import TemplateView
 
 from src.apartments.models import Apartment
+from src.core.mixins import StaffRequiredMixin
 from src.houses.models import House
 from src.users.models import User
-from src.core.mixins import StaffRequiredMixin
 
 
 # TODO: Додати відображення для Залишку як буде вже готова система обліку
@@ -16,9 +16,7 @@ class ApartmentsListView(StaffRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
 
         context["houses"] = House.objects.all()
-        context["users"] = User.objects.filter(is_staff=False).only(
-            "id", "name", "email"
-        )
+        context["users"] = User.objects.filter(is_staff=False).only("id", "name", "email")
         return context
 
 
@@ -84,8 +82,10 @@ class ApartmentsAjaxDatatableView(StaffRequiredMixin, AjaxDatatableView):
     ]
 
     def get_initial_queryset(self, request=None):
-        queryset = super().get_initial_queryset(request).select_related(
-            "house", "section", "floor", "owner"
+        queryset = (
+            super()
+            .get_initial_queryset(request)
+            .select_related("house", "section", "floor", "owner")
         )
         house_id = self.request.GET.get("house_id")
         section_id = self.request.GET.get("section_id")
@@ -101,7 +101,6 @@ class ApartmentsAjaxDatatableView(StaffRequiredMixin, AjaxDatatableView):
         return queryset
 
     def customize_row(self, row, obj):
-
         row["DT_RowAttr"] = {"data-id": obj.id}
 
         row["actions"] = """

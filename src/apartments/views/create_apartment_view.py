@@ -5,8 +5,8 @@ from django.views import View
 from django.views.generic.edit import FormView
 
 from src.apartments.forms.create_apartment_form import CreateApartmentForm
-from src.houses.models import Section, Floor
 from src.core.mixins import StaffRequiredMixin
+from src.houses.models import Floor, Section
 
 
 # TODO: Додати рахунок та тариф для зберігання

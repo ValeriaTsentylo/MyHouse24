@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import inlineformset_factory
-from src.houses.models import Staff, House
+
+from src.houses.models import House, Staff
 from src.users.models import User
 
 
@@ -31,9 +32,7 @@ class StaffForm(forms.ModelForm):
         return cleaned_data
 
 
-StaffFormSet = inlineformset_factory(
-    House, Staff, form=StaffForm, extra=0, can_delete=True
-)
+StaffFormSet = inlineformset_factory(House, Staff, form=StaffForm, extra=0, can_delete=True)
 #
 # from django import forms
 # from django.forms import inlineformset_factory

@@ -1,12 +1,10 @@
-from django import forms
 from allauth.account.forms import SignupForm
+from django import forms
 
 
 class MyCustomSignupForm(SignupForm):
     name = forms.CharField(max_length=50, required=True, label="ПІБ")
-    accept_policy = forms.BooleanField(
-        required=True, label="Я згоден з політикою конфіденційності"
-    )
+    accept_policy = forms.BooleanField(required=True, label="Я згоден з політикою конфіденційності")
 
     def clean(self):
         cleaned_data = super().clean()

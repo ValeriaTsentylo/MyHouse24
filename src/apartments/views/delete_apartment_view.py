@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.views import View
+
 from src.apartments.models import Apartment
 from src.core.mixins import StaffRequiredMixin
 

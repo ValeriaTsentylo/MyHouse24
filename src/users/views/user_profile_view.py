@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView
-from src.users.models import User
+
 from src.core.mixins import ResidentRequiredMixin
+from src.users.models import User
 
 
 class UserProfileView(ResidentRequiredMixin, TemplateView):

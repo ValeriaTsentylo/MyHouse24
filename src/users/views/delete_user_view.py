@@ -1,7 +1,8 @@
 from django.http import JsonResponse
 from django.views import View
-from src.users.models import User
+
 from src.core.mixins import StaffRequiredMixin
+from src.users.models import User
 
 
 class DeleteUserView(StaffRequiredMixin, View):

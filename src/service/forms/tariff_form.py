@@ -2,16 +2,12 @@ from django import forms
 from django.forms import inlineformset_factory
 from django.forms.widgets import Select
 
-from src.service.models import Tariff, ServicePrice, Service
+from src.service.models import Service, ServicePrice, Tariff
 
 
 class ServiceSelectWidget(Select):
-    def create_option(
-        self, name, value, label, selected, index, subindex=None, attrs=None
-    ):
-        option = super().create_option(
-            name, value, label, selected, index, subindex, attrs
-        )
+    def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
+        option = super().create_option(name, value, label, selected, index, subindex, attrs)
         if value:  # Додаємо data-unit тільки для валідних значень
             try:
                 # Передбачається, що `Service` — це модель
@@ -59,8 +55,7 @@ class ServicePriceForm(forms.ModelForm):
         if "service" in self.fields:
             # Оновлення вибору (choices) і додавання data-unit
             self.fields["service"].widget.choices = [
-                (service.id, service.name)
-                for service in self.fields["service"].queryset
+                (service.id, service.name) for service in self.fields["service"].queryset
             ]
 
 

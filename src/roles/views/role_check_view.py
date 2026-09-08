@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView
-from src.roles.utils import RoleCheck
+
 from src.core.mixins import StaffRequiredMixin
+from src.roles.utils import RoleCheck
 
 
 class DashboardView(StaffRequiredMixin, TemplateView):

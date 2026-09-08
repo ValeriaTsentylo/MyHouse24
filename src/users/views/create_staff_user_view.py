@@ -1,12 +1,12 @@
 from django.db import transaction
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.views.generic import View
 
+from src.core.mixins import StaffRequiredMixin
 from src.roles.models import RolePermission
 from src.users.forms.create_staff_user_form import CreateStaffUserForm
 from src.users.models import User
 from src.users.tasks import send_email_task
-from src.core.mixins import StaffRequiredMixin
 
 
 class CreateStaffUserView(StaffRequiredMixin, View):

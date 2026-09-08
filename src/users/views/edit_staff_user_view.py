@@ -1,13 +1,13 @@
 import logging
 
+from django.shortcuts import redirect, render
 from django.views.generic import View
-from django.shortcuts import render, redirect
+
+from src.core.mixins import StaffRequiredMixin
+from src.roles.models import RolePermission
 from src.users.forms.edit_staff_user_form import EditStaffUserForm
 from src.users.models import User
-from src.roles.models import RolePermission
 from src.users.tasks import send_email_task
-from src.core.mixins import StaffRequiredMixin
-
 
 logger = logging.getLogger(__name__)
 

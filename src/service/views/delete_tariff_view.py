@@ -1,8 +1,8 @@
 from django.http import JsonResponse
 from django.views import View
 
-from src.service.models import Tariff
 from src.core.mixins import StaffRequiredMixin
+from src.service.models import Tariff
 
 
 class DeleteTariffView(StaffRequiredMixin, View):

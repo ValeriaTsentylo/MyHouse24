@@ -1,8 +1,8 @@
 from django.http import JsonResponse
 from django.views import View
 
-from src.service.models import Account
 from src.core.mixins import StaffRequiredMixin
+from src.service.models import Account
 
 
 class DeleteAccountView(StaffRequiredMixin, View):

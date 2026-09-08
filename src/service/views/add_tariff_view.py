@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.views import View
 
-from src.service.forms.tariff_form import TariffForm, ServicePriceFormSet
-from src.service.models import Service
 from src.core.mixins import StaffRequiredMixin
+from src.service.forms.tariff_form import ServicePriceFormSet, TariffForm
+from src.service.models import Service
 
 
 class AddTariffView(StaffRequiredMixin, View):
@@ -28,9 +28,7 @@ class AddTariffView(StaffRequiredMixin, View):
 
     def post(self, request):
         tariff_form = TariffForm(request.POST)
-        service_price_formset = ServicePriceFormSet(
-            request.POST, prefix="service_price"
-        )
+        service_price_formset = ServicePriceFormSet(request.POST, prefix="service_price")
 
         if tariff_form.is_valid() and service_price_formset.is_valid():
             tariff_instance = tariff_form.save()

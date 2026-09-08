@@ -1,7 +1,8 @@
 from django.http import JsonResponse
 from django.views import View
-from src.houses.models import House
+
 from src.core.mixins import StaffRequiredMixin
+from src.houses.models import House
 
 
 class DeleteHouseView(StaffRequiredMixin, View):

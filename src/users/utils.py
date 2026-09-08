@@ -5,8 +5,6 @@ import requests
 from allauth.account.models import EmailAddress
 from django.conf import settings
 
-from .tasks import send_email_task
-
 
 def verify_recaptcha(recaptcha_response):
     data = {"secret": settings.RECAPTCHA_PRIVATE_KEY, "response": recaptcha_response}

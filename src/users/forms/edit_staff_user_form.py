@@ -1,7 +1,8 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from src.users.models import User
+
 from src.roles.models import RolePermission
+from src.users.models import User
 
 
 class EditStaffUserForm(forms.ModelForm):
@@ -26,17 +27,13 @@ class EditStaffUserForm(forms.ModelForm):
         required=True,
         label="Роль",
         empty_label="Оберіть роль",
-        widget=forms.Select(
-            attrs={"class": "form-control select2bs4", "style": "width: 100%;"}
-        ),
+        widget=forms.Select(attrs={"class": "form-control select2bs4", "style": "width: 100%;"}),
     )
     status = forms.ChoiceField(
         choices=User.STATUS_CHOICES,
         required=True,
         label="Статус",
-        widget=forms.Select(
-            attrs={"class": "form-control select2bs4", "style": "width: 100%;"}
-        ),
+        widget=forms.Select(attrs={"class": "form-control select2bs4", "style": "width: 100%;"}),
     )
     password1 = forms.CharField(
         required=False,

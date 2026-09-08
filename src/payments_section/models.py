@@ -1,7 +1,8 @@
 from django.db import models
-from src.houses.models import House, Section
+
 from src.apartments.models import Apartment
-from src.service.models import Service, Account
+from src.houses.models import House, Section
+from src.service.models import Account, Service
 from src.users.models import User
 
 
@@ -17,9 +18,7 @@ class Receipt(models.Model):  # квитанція
     start_date = models.DateField()
     end_date = models.DateField()
     pay_status = (
-        models.CharField(
-            choices=RECEIPT_PAYMENT_STATUS_CHOICES, default="unpaid", max_length=30
-        ),
+        models.CharField(choices=RECEIPT_PAYMENT_STATUS_CHOICES, default="unpaid", max_length=30),
     )
     house = models.ForeignKey(House, on_delete=models.CASCADE)
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
@@ -45,9 +44,7 @@ class PersonalAccount(models.Model):
 
 class InStatement(models.Model):  # прихідна відомість
     number = models.IntegerField()
-    owner = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="owned_instatements"
-    )
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owned_instatements")
     personal_account = models.ForeignKey(PersonalAccount, on_delete=models.CASCADE)
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     manager = models.ForeignKey(User, on_delete=models.CASCADE)

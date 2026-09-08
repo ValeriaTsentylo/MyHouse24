@@ -1,12 +1,12 @@
 import logging
 
-from django.urls import reverse_lazy
-from django.http import JsonResponse
+from allauth.account.utils import send_email_confirmation
 from allauth.account.views import SignupView
 from django.contrib.auth import get_user_model
-from src.users.utils import verify_recaptcha
-from allauth.account.utils import send_email_confirmation
+from django.http import JsonResponse
+from django.urls import reverse_lazy
 
+from src.users.utils import verify_recaptcha
 
 # TODO: Розібратися чому не зберігає ПІБ для звичайного користувача. Також додати шоб роль зберігалася для нього, як користувач
 logger = logging.getLogger(__name__)
@@ -48,14 +48,10 @@ class CustomSignupView(SignupView):
 
         recaptcha_response = self.request.POST.get("g-recaptcha-response")
         if verify_recaptcha(recaptcha_response):
-            user = form.save(
-                self.request
-            )  # Зберігає користувача, включаючи поле "name"
+            user = form.save(self.request)  # Зберігає користувача, включаючи поле "name"
             user.status = "new"
             user.is_active = False
-            user.save(
-                update_fields=["status", "is_active"]
-            )  # Уникає перезапису інших полів
+            user.save(update_fields=["status", "is_active"])  # Уникає перезапису інших полів
 
             send_email_confirmation(self.request, user)
 

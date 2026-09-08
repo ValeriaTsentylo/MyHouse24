@@ -25,9 +25,7 @@ class EditApartmentView(StaffRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["apartment"] = (
-            self.get_object()
-        )  # Передаємо об'єкт в контекст для шаблону
+        context["apartment"] = self.get_object()  # Передаємо об'єкт в контекст для шаблону
         return context
 
     def form_valid(self, form):

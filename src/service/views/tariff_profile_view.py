@@ -1,7 +1,7 @@
 from django.views.generic import DetailView
 
-from src.service.models import Tariff, ServicePrice
 from src.core.mixins import StaffRequiredMixin
+from src.service.models import ServicePrice, Tariff
 
 
 class TariffDetailView(StaffRequiredMixin, DetailView):

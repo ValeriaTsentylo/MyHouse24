@@ -1,11 +1,10 @@
-from src.users.models import User
-from src.roles.models import RolePermission
-
-
 from ajax_datatable import AjaxDatatableView
-from django.views.generic import TemplateView
 from django.urls import reverse
+from django.views.generic import TemplateView
+
 from src.core.mixins import StaffRequiredMixin
+from src.roles.models import RolePermission
+from src.users.models import User
 
 
 class UsersStaffListView(StaffRequiredMixin, TemplateView):

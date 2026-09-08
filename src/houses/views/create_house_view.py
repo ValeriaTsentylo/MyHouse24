@@ -3,12 +3,12 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
 
+from src.core.mixins import StaffRequiredMixin
 from src.houses.forms.create_house_form import CreateHouseForm
 from src.houses.forms.floor_form import FloorFormSet
 from src.houses.forms.section_form import SectionFormSet
 from src.houses.forms.staff_form import StaffFormSet
 from src.houses.models import House
-from src.core.mixins import StaffRequiredMixin
 
 
 class CreateHouseView(StaffRequiredMixin, FormView):
@@ -21,9 +21,7 @@ class CreateHouseView(StaffRequiredMixin, FormView):
         house = self.get_house()
 
         if self.request.POST:
-            context["section_formset"] = SectionFormSet(
-                self.request.POST, instance=house
-            )
+            context["section_formset"] = SectionFormSet(self.request.POST, instance=house)
             context["floor_formset"] = FloorFormSet(self.request.POST, instance=house)
             context["staff_formset"] = StaffFormSet(self.request.POST, instance=house)
         else:
@@ -45,9 +43,7 @@ class CreateHouseView(StaffRequiredMixin, FormView):
         staff_formset = context["staff_formset"]
 
         if not (
-            section_formset.is_valid()
-            and floor_formset.is_valid()
-            and staff_formset.is_valid()
+            section_formset.is_valid() and floor_formset.is_valid() and staff_formset.is_valid()
         ):
             return self.render_to_response(context)
 

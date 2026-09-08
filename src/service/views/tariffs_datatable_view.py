@@ -2,8 +2,8 @@ from ajax_datatable import AjaxDatatableView
 from django.urls import reverse
 from django.views.generic import TemplateView
 
-from src.service.models import Tariff
 from src.core.mixins import StaffRequiredMixin
+from src.service.models import Tariff
 
 
 class TariffListView(StaffRequiredMixin, TemplateView):

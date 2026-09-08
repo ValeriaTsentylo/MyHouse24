@@ -1,9 +1,9 @@
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 
-from src.service.forms.tariff_form import TariffForm, ServicePriceFormSet
-from src.service.models import Tariff, Service
 from src.core.mixins import StaffRequiredMixin
+from src.service.forms.tariff_form import ServicePriceFormSet, TariffForm
+from src.service.models import Service, Tariff
 
 
 class EditTariffView(StaffRequiredMixin, View):
@@ -13,9 +13,7 @@ class EditTariffView(StaffRequiredMixin, View):
     def get(self, request, pk):
         tariff = get_object_or_404(Tariff, pk=pk)
         tariff_form = TariffForm(instance=tariff)
-        service_price_formset = ServicePriceFormSet(
-            instance=tariff, prefix="service_price"
-        )
+        service_price_formset = ServicePriceFormSet(instance=tariff, prefix="service_price")
         services = Service.objects.select_related("unit_of_change").all()
 
         return render(

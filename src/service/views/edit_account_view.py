@@ -2,9 +2,9 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
 
+from src.core.mixins import StaffRequiredMixin
 from src.service.forms.account_form import AccountForm
 from src.service.models import Account
-from src.core.mixins import StaffRequiredMixin
 
 
 class EditAccountView(StaffRequiredMixin, FormView):
