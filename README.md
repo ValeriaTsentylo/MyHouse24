@@ -1,6 +1,5 @@
 # MyHouse24
 
-[![CI](https://github.com/ValeriaTsentylo/MyHouse24/actions/workflows/ci.yml/badge.svg)](https://github.com/ValeriaTsentylo/MyHouse24/actions/workflows/ci.yml)
 
 Web application for managing residential complexes: houses and apartments, owners,
 utility services and tariffs, receipts and personal accounts, cash-flow statements
