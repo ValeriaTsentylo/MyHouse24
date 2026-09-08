@@ -3,13 +3,14 @@ from django.urls import reverse
 from django.views.generic import TemplateView
 
 from src.houses.models import House
+from src.core.mixins import StaffRequiredMixin
 
 
-class HousesListView(TemplateView):
+class HousesListView(StaffRequiredMixin, TemplateView):
     template_name = "houses/houses_table.html"
 
 
-class HousesAjaxDatatableView(AjaxDatatableView):
+class HousesAjaxDatatableView(StaffRequiredMixin, AjaxDatatableView):
     model = House
     title = "Дома"
     initial_order = [["id", "asc"]]

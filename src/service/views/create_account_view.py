@@ -3,9 +3,10 @@ from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
 
 from src.service.forms.account_form import AccountForm
+from src.core.mixins import StaffRequiredMixin
 
 
-class CreateAccountView(FormView):
+class CreateAccountView(StaffRequiredMixin, FormView):
     template_name = "account/account.html"
     form_class = AccountForm
 

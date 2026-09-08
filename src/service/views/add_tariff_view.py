@@ -3,9 +3,10 @@ from django.views import View
 
 from src.service.forms.tariff_form import TariffForm, ServicePriceFormSet
 from src.service.models import Service
+from src.core.mixins import StaffRequiredMixin
 
 
-class AddTariffView(View):
+class AddTariffView(StaffRequiredMixin, View):
     template_name = "tariff/add_tariff_page.html"
 
     success_url = "tariffs"

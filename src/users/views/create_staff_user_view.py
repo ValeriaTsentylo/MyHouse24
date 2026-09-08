@@ -5,9 +5,10 @@ from src.roles.models import RolePermission
 from src.users.forms.create_staff_user_form import CreateStaffUserForm
 from src.users.models import User
 from src.users.tasks import send_email_task
+from src.core.mixins import StaffRequiredMixin
 
 
-class CreateStaffUserView(View):
+class CreateStaffUserView(StaffRequiredMixin, View):
     template_name = "users/admin/create_staff_user.html"
     form_class = CreateStaffUserForm
 

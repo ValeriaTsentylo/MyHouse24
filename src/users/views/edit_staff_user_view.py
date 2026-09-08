@@ -4,9 +4,10 @@ from src.users.forms.edit_staff_user_form import EditStaffUserForm
 from src.users.models import User
 from src.roles.models import RolePermission
 from src.users.tasks import send_email_task
+from src.core.mixins import StaffRequiredMixin
 
 
-class EditStaffUserView(View):
+class EditStaffUserView(StaffRequiredMixin, View):
     template_name = "users/admin/edit_staff_user.html"
     form_class = EditStaffUserForm
 

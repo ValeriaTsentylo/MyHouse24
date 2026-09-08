@@ -3,13 +3,14 @@ from django.urls import reverse
 from django.views.generic import TemplateView
 
 from src.service.models import Tariff
+from src.core.mixins import StaffRequiredMixin
 
 
-class TariffListView(TemplateView):
+class TariffListView(StaffRequiredMixin, TemplateView):
     template_name = "tariff/tariffs_table.html"
 
 
-class TariffsAjaxDatatableView(AjaxDatatableView):
+class TariffsAjaxDatatableView(StaffRequiredMixin, AjaxDatatableView):
     model = Tariff
     title = "Тарифи"
     initial_order = [["name", "asc"]]

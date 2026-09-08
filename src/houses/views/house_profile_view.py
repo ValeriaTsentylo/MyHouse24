@@ -1,8 +1,9 @@
 from django.views.generic import TemplateView
 from src.houses.models import House, Section, Floor
+from src.core.mixins import StaffRequiredMixin
 
 
-class HouseProfileView(TemplateView):
+class HouseProfileView(StaffRequiredMixin, TemplateView):
     template_name = "houses/house_profile_page.html"
 
     def get_context_data(self, **kwargs):

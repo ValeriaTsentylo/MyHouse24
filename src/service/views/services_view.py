@@ -3,9 +3,10 @@ from django.views import View
 
 from src.service.forms.service_form import UnitFormSet, ServiceFormSet
 from src.service.models import UnitOfChange, Service
+from src.core.mixins import StaffRequiredMixin
 
 
-class ServicesView(View):
+class ServicesView(StaffRequiredMixin, View):
     template_name = "service/service_page.html"
     success_url = "services"
 

@@ -1,8 +1,9 @@
 from django.views.generic import TemplateView
 from src.roles.utils import RoleCheck
+from src.core.mixins import StaffRequiredMixin
 
 
-class DashboardView(TemplateView):
+class DashboardView(StaffRequiredMixin, TemplateView):
     template_name = "admin/adminlte_base.html"
 
     def get_context_data(self, **kwargs):

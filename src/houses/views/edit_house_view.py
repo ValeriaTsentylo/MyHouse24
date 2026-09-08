@@ -8,9 +8,10 @@ from src.houses.forms.floor_form import FloorFormSet
 from src.houses.forms.section_form import SectionFormSet
 from src.houses.forms.staff_form import StaffFormSet
 from src.houses.models import House
+from src.core.mixins import StaffRequiredMixin
 
 
-class EditHouseView(UpdateView):
+class EditHouseView(StaffRequiredMixin, UpdateView):
     model = House
     template_name = "houses/edit_house_page.html"
     form_class = EditHouseForm

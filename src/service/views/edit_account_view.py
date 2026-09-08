@@ -4,9 +4,10 @@ from django.views.generic.edit import FormView
 
 from src.service.forms.account_form import AccountForm
 from src.service.models import Account
+from src.core.mixins import StaffRequiredMixin
 
 
-class EditAccountView(FormView):
+class EditAccountView(StaffRequiredMixin, FormView):
     template_name = "account/account.html"
     form_class = AccountForm
     success_url = reverse_lazy("accounts")

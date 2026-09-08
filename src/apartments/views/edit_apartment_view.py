@@ -4,9 +4,10 @@ from django.views.generic.edit import FormView
 
 from src.apartments.forms.create_apartment_form import CreateApartmentForm
 from src.apartments.models import Apartment
+from src.core.mixins import StaffRequiredMixin
 
 
-class EditApartmentView(FormView):
+class EditApartmentView(StaffRequiredMixin, FormView):
     template_name = "apartments/edit_apartment_page.html"
     form_class = CreateApartmentForm
     success_url = reverse_lazy("apartments")

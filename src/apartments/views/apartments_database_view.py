@@ -5,10 +5,11 @@ from django.views.generic import TemplateView
 from src.apartments.models import Apartment
 from src.houses.models import House
 from src.users.models import User
+from src.core.mixins import StaffRequiredMixin
 
 
 # TODO: Додати відображення для Залишку як буде вже готова система обліку
-class ApartmentsListView(TemplateView):
+class ApartmentsListView(StaffRequiredMixin, TemplateView):
     template_name = "apartments/apartments_datatable.html"
 
     def get_context_data(self, **kwargs):
@@ -19,7 +20,7 @@ class ApartmentsListView(TemplateView):
         return context
 
 
-class ApartmentsAjaxDatatableView(AjaxDatatableView):
+class ApartmentsAjaxDatatableView(StaffRequiredMixin, AjaxDatatableView):
     model = Apartment
     title = "Квартири"
     initial_order = [["number", "asc"]]
