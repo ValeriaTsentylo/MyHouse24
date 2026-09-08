@@ -1,3 +1,5 @@
+import logging
+
 from django.views.generic import View
 from django.shortcuts import render, redirect
 from src.users.forms.edit_staff_user_form import EditStaffUserForm
@@ -5,6 +7,9 @@ from src.users.models import User
 from src.roles.models import RolePermission
 from src.users.tasks import send_email_task
 from src.core.mixins import StaffRequiredMixin
+
+
+logger = logging.getLogger(__name__)
 
 
 class EditStaffUserView(StaffRequiredMixin, View):
@@ -56,7 +61,7 @@ class EditStaffUserView(StaffRequiredMixin, View):
                     subject, "emails_template/account_change.html", context, user.email
                 )
             except Exception as e:
-                print(f"Failed to send email: {e}")
+                logger.warning(f"Failed to send email: {e}")
 
             return redirect("users-staff")
         else:

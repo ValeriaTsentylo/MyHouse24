@@ -1,4 +1,5 @@
-from django.shortcuts import redirect
+from django.db import transaction
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
 
@@ -34,7 +35,7 @@ class CreateHouseView(StaffRequiredMixin, FormView):
     def get_house(self):
         house_id = self.kwargs.get("pk")
         if house_id:
-            return House.objects.get(pk=house_id)
+            return get_object_or_404(House, pk=house_id)
         return None
 
     def form_valid(self, form):
@@ -43,21 +44,17 @@ class CreateHouseView(StaffRequiredMixin, FormView):
         floor_formset = context["floor_formset"]
         staff_formset = context["staff_formset"]
 
-        if (
+        if not (
             section_formset.is_valid()
             and floor_formset.is_valid()
             and staff_formset.is_valid()
         ):
+            return self.render_to_response(context)
+
+        with transaction.atomic():
             house = form.save()
+            for formset in (section_formset, floor_formset, staff_formset):
+                formset.instance = house
+                formset.save()
 
-            section_formset.instance = house
-            floor_formset.instance = house
-            staff_formset.instance = house
-
-            section_formset.save()
-            floor_formset.save()
-            staff_formset.save()
-
-            return redirect(self.success_url)
-
-        return self.render_to_response(self.get_context_data(form=form))
+        return redirect(self.success_url)

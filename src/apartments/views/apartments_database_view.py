@@ -16,7 +16,9 @@ class ApartmentsListView(StaffRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
 
         context["houses"] = House.objects.all()
-        context["users"] = User.objects.all()
+        context["users"] = User.objects.filter(is_staff=False).only(
+            "id", "name", "email"
+        )
         return context
 
 
@@ -82,7 +84,9 @@ class ApartmentsAjaxDatatableView(StaffRequiredMixin, AjaxDatatableView):
     ]
 
     def get_initial_queryset(self, request=None):
-        queryset = super().get_initial_queryset(request)
+        queryset = super().get_initial_queryset(request).select_related(
+            "house", "section", "floor", "owner"
+        )
         house_id = self.request.GET.get("house_id")
         section_id = self.request.GET.get("section_id")
         floor_id = self.request.GET.get("floor_id")
