@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: myhouse24
+          POSTGRES_USER: myhouse24
+          POSTGRES_PASSWORD: myhouse24
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+        ports: ["5432:5432"]
+      redis:
+        image: redis:7
+        ports: ["6379:6379"]
+
+    env:
+      ENVIRONMENT: ci
+      DEBUG: "True"
+      SECRET_KEY: ci-secret-key
+      ALLOWED_HOSTS: localhost,127.0.0.1,testserver
+      DB_NAME: myhouse24
+      DB_USER: myhouse24
+      DB_PASSWORD: myhouse24
+      DB_HOST: localhost
+      DB_PORT: "5432"
+      REDIS_URL: redis://localhost:6379/0
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Poetry
+        run: pipx install poetry==1.8.5
+
+      - name: Install dependencies
+        run: poetry install --with dev --no-root
+
+      - name: Lint
+        run: |
+          poetry run ruff check .
+          poetry run ruff format --check .
+
+      - name: Django checks
+        run: poetry run python manage.py check
+
+      - name: Missing migrations
+        run: poetry run python manage.py makemigrations --check --dry-run
+
+      - name: Tests
+        run: poetry run pytest --cov=src --cov-report=term-missing
